@@ -238,7 +238,8 @@ add_dependencies(${PROJECT_NAME}_nodelet ${PROJECT_NAME}_generate_messages_cpp)
 # Macro for adding executables
 macro(add_orbbec_executable TARGET SOURCES)
   add_executable(${TARGET} ${SOURCES})
-  target_link_libraries(${TARGET} ${COMMON_LINK_LIBRARIES} ${PROJECT_NAME})
+  add_dependencies(${TARGET} ${catkin_EXPORTED_TARGETS})
+  target_link_libraries(${TARGET} ${COMMON_LINK_LIBRARIES} ${PROJECT_NAME} udev)
   target_include_directories(${TARGET} PUBLIC ${COMMON_INCLUDE_DIRS})
 endmacro()
 
@@ -249,6 +250,17 @@ add_orbbec_executable(list_camera_profile_mode_node src/list_camera_profile_mode
 add_orbbec_executable(orbbec_camera_node src/main.cpp)
 
 # Install
+install(
+  TARGETS         
+    list_devices_node
+    list_depth_work_mode_node
+    list_camera_profile_mode_node
+    orbbec_camera_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 install(TARGETS ${PROJECT_NAME} ${PROJECT_NAME}_nodelet ${EXECUTABLES}
   orbbec_camera_node
   list_devices_node
